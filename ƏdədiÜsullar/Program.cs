@@ -71,7 +71,7 @@ namespace ƏdədiÜsullar
             return points;
         }
 
-        static List<string> NyutonVeterler(double eps)
+        static List<string> Nyuton(double eps)
         {
             List<string> points = new List<string>();
             double leftPoint = 0;
@@ -192,6 +192,80 @@ namespace ƏdədiÜsullar
             return points;
         }
 
+        static List<string> Common(double eps)
+        {
+            List<string> points = new List<string>();
+            double leftPoint = 0;
+            double rightPoint = 0;
+            int start = 0;
+            double value = 0;
+            double prevValueNewton = 0;
+            double prevValue = 0;
+            if (Function(start) > 0)
+            {
+                while (Function(start) > 0)
+                {
+                    start--;
+                }
+                leftPoint = start;
+                rightPoint = leftPoint + 1;
+            }
+            else
+            {
+                if (Function(start) == 0)
+                {
+                    points.Add($"The Route : {0}");
+                    return points;
+                }
+                else
+                {
+                    while (Function(start) < 0)
+                    {
+                        start++;
+                    }
+                    rightPoint = start;
+                    leftPoint = rightPoint - 1;
+                }
+            }
+            double h = 0.0001;
+            if (Function(rightPoint) * TwiceDiferation(rightPoint, h) > 0)
+            {
+                prevValue = rightPoint;
+                while (Math.Abs(prevValueNewton - rightPoint) > eps)
+                {
+                    prevValueNewton = rightPoint;
+                    points.Add($" : {prevValueNewton} - Nyuton Toxunanlar Koku");
+                    rightPoint = prevValueNewton - (Function(prevValueNewton) / TwiceDiferation(prevValueNewton, h));
+
+                    if (value != 0)
+                    {
+                        prevValue = value;
+                    }
+                    points.Add($" : {prevValue} - Veterler Koku");
+                    value = ((leftPoint * Function(prevValue)) - (prevValue * Function(leftPoint))) / (Function(prevValue) - Function(leftPoint));
+                }
+
+            }
+            else
+            {
+                prevValue = leftPoint;
+                while (Math.Abs(prevValueNewton - rightPoint) > eps)
+                {
+                    prevValueNewton = leftPoint;
+                    points.Add($" : {prevValueNewton} - Nyuton Toxunanlar Koku");
+                    leftPoint = prevValueNewton - (Function(prevValueNewton) / TwiceDiferation(prevValueNewton, h));
+
+                    if (value != 0)
+                    {
+                        prevValue = value;
+                    }
+                    points.Add($" : {prevValue} - Veterler Koku");
+                    value = ((prevValue * Function(rightPoint)) - (rightPoint * Function(prevValue))) / (Function(rightPoint) - Function(prevValue));
+                }
+            }
+            return points;
+
+        }
         public static void Main()
         {
             int counter = 0;
@@ -205,7 +279,7 @@ namespace ƏdədiÜsullar
             }
 
             Console.WriteLine("Nyuton : ");
-            foreach (var item in NyutonVeterler(eps))
+            foreach (var item in Nyuton(eps))
             {
                 if (counter == 0)
                 {
@@ -223,6 +297,14 @@ namespace ƏdədiÜsullar
                 {
                     Console.WriteLine($"Parcanin Kokunun secildiyi ilk qiymet x0 dir ");
                 }
+                Console.WriteLine($"x{counter}" + item);
+                counter++;
+            }
+
+            Console.WriteLine("\nBirlesmis Usul : ");
+            counter = 0;
+            foreach (var item in Common(eps))
+            {
                 Console.WriteLine($"x{counter}" + item);
                 counter++;
             }
