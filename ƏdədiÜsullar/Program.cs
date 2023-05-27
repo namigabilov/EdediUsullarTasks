@@ -7,7 +7,13 @@ namespace ƏdədiÜsullar
     {
         static double Function(double x)
         {
-            double func = (2 * Math.Pow(x, 2) + 3 * x - 2);
+            double func = (5 * Math.Pow(x, 2) + 3 * x - 2);
+            //double func = (3 * Math.Pow(x, 3) - 2 * Math.Pow(x, 2) + 2 * x - 5);
+            return func;
+        }
+        static double IntegralFunction(double x)
+        {
+            double func = (3 * Math.Pow(x, 3) + 2 * Math.Pow(x, 2) - 5);
             return func;
         }
 
@@ -57,7 +63,7 @@ namespace ƏdədiÜsullar
                 {
                     rightPoint = (rightPoint + leftPoint) / 2;
                 }
-                else if((Function(leftPoint) + Function(rightPoint)) / 2 == 0)
+                else if ((Function(leftPoint) + Function(rightPoint)) / 2 == 0)
                 {
                     points.Add($"Funksiyanin Koku : {(Function(leftPoint) + Function(rightPoint)) / 2 }");
                     return points;
@@ -77,7 +83,7 @@ namespace ƏdədiÜsullar
             double leftPoint = 0;
             double rightPoint = 0;
             int start = 0;
-            double prevValue = 0; 
+            double prevValue = 0;
             if (Function(start) > 0)
             {
                 while (Function(start) > 0)
@@ -105,7 +111,7 @@ namespace ƏdədiÜsullar
                 }
             }
             double h = 0.0001;
-            if (Function(rightPoint)*TwiceDiferation(rightPoint,h) > 0)
+            if (Function(rightPoint) * TwiceDiferation(rightPoint, h) > 0)
             {
                 while (Math.Abs(prevValue - rightPoint) > eps)
                 {
@@ -163,7 +169,7 @@ namespace ƏdədiÜsullar
                 }
             }
             double h = 0.0001;
-            if (TwiceDiferation(leftPoint,h) < 0)
+            if (TwiceDiferation(leftPoint, h) < 0)
             {
                 prevValue = leftPoint;
                 while (Math.Abs(prevValue - value) > eps)
@@ -266,6 +272,87 @@ namespace ƏdədiÜsullar
             return points;
 
         }
+
+        static double Duzbucaqlilar(double a, double b, int n)
+        {
+            double[] funcValues = new double[n + 1];
+            double value = 0;
+            double deltaX = Math.Abs(a - b) / n;
+            double integralSum = 0;
+            if (a < b)
+            {
+                value = a;
+            }
+            else
+            {
+                value = b;
+            }
+            for (int i = 0; i <= n; i++)
+            {
+                funcValues[i] = IntegralFunction(value);
+                value += deltaX;
+            }
+            for (int i = 0; i < funcValues.Length - 1; i++)
+            {
+                integralSum += funcValues[i];
+            }
+            integralSum *= deltaX;
+            return integralSum;
+        }
+
+        static double Trapesler(double a, double b, int n)
+        {
+            double[] funcValues = new double[n + 1];
+            double value = 0;
+            double deltaX = Math.Abs(a - b) / n;
+            double integralSum = 0;
+            if (a < b)
+            {
+                value = a;
+            }
+            else
+            {
+                value = b;
+            }
+            for (int i = 0; i <= n; i++)
+            {
+                funcValues[i] = IntegralFunction(value);
+                value += deltaX;
+            }
+            for (int i = 0; i < funcValues.Length - 1; i++)
+            {
+                double x = ((deltaX / 2) * (funcValues[i] + funcValues[i + 1]));
+                integralSum += x;
+            }
+
+            return integralSum;
+        }
+        static double Simpson(double a,double b,int n)
+        {
+            double[] funcValues = new double[n + 1];
+            double value = 0;
+            double deltaX = Math.Abs(a - b) / n;
+            double integralSum = 0;
+            if (a < b)
+            {
+                value = a;
+            }
+            else
+            {
+                value = b;
+            }
+            for (int i = 0; i <= n; i++)
+            {
+                funcValues[i] = IntegralFunction(value);
+                value += deltaX;
+            }
+            for (int i = 0; i < funcValues.Length - 2; i++)
+            {
+                integralSum += (funcValues[i] + funcValues[i + 1] + funcValues[i + 2]);
+            }
+            integralSum *= deltaX / 3;
+            return integralSum;
+        }
         public static void Main()
         {
             int counter = 0;
@@ -308,6 +395,13 @@ namespace ƏdədiÜsullar
                 Console.WriteLine($"x{counter}" + item);
                 counter++;
             }
+
+            Console.WriteLine($"\nTrapesler usulu integral ucun : {Trapesler(-1, 3, 100)}");
+
+            Console.WriteLine($"\nDuzbucaqlialr usulu integral ucun : {Duzbucaqlilar(-1, 3, 100)}");
+
+            Console.WriteLine($"\nSimpson usulu integral ucun : {Simpson(-1, 3, 100)}");
+
         }
     }
 }
