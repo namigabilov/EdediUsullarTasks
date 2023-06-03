@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace ƏdədiÜsullar
 {
@@ -11,18 +12,78 @@ namespace ƏdədiÜsullar
             //double func = (3 * Math.Pow(x, 3) - 2 * Math.Pow(x, 2) + 2 * x - 5);
             return func;
         }
+        static double IterationFunc(double x)
+        {
+            return (2 - Math.Pow(x, 2)) / (3);
+        }
         static double IntegralFunction(double x)
         {
-            double func = (3 * Math.Pow(x, 3) + 2 * Math.Pow(x, 2) - 5);
+            double func = (Math.Pow(x, 4) + 2 * Math.Pow(x, 2) - 5);
             return func;
         }
-
+        static double Diferation(double x,double h)
+        {
+            return (IterationFunc(x + h) - IterationFunc(x)) / h;
+        }
         static double TwiceDiferation(double x, double h)
         {
             double func = (Function(x + h) - 2 * Function(x) + Function(x - h)) / (Math.Pow(h, 2));
             return func;
         }
+        static List<String> Iteration(double eps)
+        {
+            List<string> points = new List<string>();
+            double x = 0;
+            double xn = 0;
+            double leftPoint = 0;
+            double rightPoint = 0;
+            int start = 0;
+            if (Function(start) > 0)
+            {
+                while (Function(start) > 0)
+                {
+                    start--;
+                }
+                leftPoint = start;
+                rightPoint = leftPoint + 1;
+            }
+            else
+            {
+                if (Function(start) == 0)
+                {
+                    points.Add($"The Route : {0}");
+                    return points;
+                }
+                else
+                {
+                    while (Function(start) < 0)
+                    {
+                        start++;
+                    }
+                    rightPoint = start;
+                    leftPoint = rightPoint - 1;
+                }
+            }
 
+            if (Math.Abs(IterationFunc(leftPoint)) < 1 && Math.Abs(IterationFunc(rightPoint)) < 1)
+            {
+                x = leftPoint;
+                do
+                {
+                    xn = IterationFunc(x);
+                    x= xn;
+
+                    points.Add($"X=> {x}");
+
+                } while (Math.Abs(Function(x) - Function(xn)) > eps);
+            }
+            else
+            {
+                points.Add($"Sade Iterasiya yararli deyil !");
+            }
+
+            return points;
+        }
         static List<string> SplitHalf(double eps)
         {
             List<string> points = new List<string>();
@@ -391,6 +452,14 @@ namespace ƏdədiÜsullar
             Console.WriteLine("\nBirlesmis Usul : ");
             counter = 0;
             foreach (var item in Common(eps))
+            {
+                Console.WriteLine($"x{counter}" + item);
+                counter++;
+            }
+
+            Console.WriteLine("\n Sade Iterasiya Usulu : ");
+            counter = 0;
+            foreach (var item in Iteration(eps))
             {
                 Console.WriteLine($"x{counter}" + item);
                 counter++;
